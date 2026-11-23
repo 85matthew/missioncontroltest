@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; object-src 'none'; base-uri 'self'"
+    />
+    <title>Frogger Arcade</title>
+    <link rel="stylesheet" href="styles/frogger.css" />
+  </head>
+  <body>
+    <main class="arcade-cabinet">
+      <header class="cabinet-marquee">
+        <h1 class="marquee-title">FROGGER</h1>
+        <p class="marquee-subtitle">1981 ARCADE EDITION</p>
+      </header>
+
+      <section class="bezel" aria-label="Arcade Screen">
+        <div id="crt-stage" class="crt-stage">
+          <canvas
+            id="game-canvas"
+            width="672"
+            height="728"
+            aria-label="Frogger Arcade Playfield"
+          ></canvas>
+          <div class="crt-overlay" aria-hidden="true"></div>
+        </div>
+      </section>
+
+      <section class="controls-bar" aria-label="Cabinet Controls">
+        <button id="btn-start" type="button" class="arcade-btn arcade-btn--primary">START</button>
+        <button id="btn-pause" type="button" class="arcade-btn">PAUSE</button>
+        <button id="btn-mute" type="button" class="arcade-btn" aria-pressed="false">SOUND: ON</button>
+        <button id="btn-crt" type="button" class="arcade-btn" aria-pressed="false">CRT: OFF</button>
+      </section>
+
+      <section class="touch-controls" aria-label="Touch D-Pad">
+        <div class="dpad" role="group" aria-label="Move Frog">
+          <button type="button" class="dpad-btn dpad-up" data-dir="UP" aria-label="Hop Up">
+            ▲
+          </button>
+          <button type="button" class="dpad-btn dpad-left" data-dir="LEFT" aria-label="Hop Left">
+            ◀
+          </button>
+          <button type="button" class="dpad-btn dpad-right" data-dir="RIGHT" aria-label="Hop Right">
+            ▶
+          </button>
+          <button type="button" class="dpad-btn dpad-down" data-dir="DOWN" aria-label="Hop Down">
+            ▼
+          </button>
+        </div>
+        <p class="key-hints">
+          Arrows / WASD: Hop &middot; Enter / Space: Start &middot; P / Esc: Pause &middot; M: Mute
+        </p>
+      </section>
+
+      <div id="sr-status" class="sr-only" aria-live="polite"></div>
+    </main>
+
+    <script type="module" src="src/main.js"></script>
+  </body>
+</html>

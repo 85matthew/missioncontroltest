@@ -1,0 +1,3 @@
+test_command: node --test
+ci_steward_enabled: true
+skip_tests: false
