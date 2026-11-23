@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://missioncontroltest.local/specs/001-msnf19-create-an-old-school-frogger-game-re/game-state.schema.json",
+  "title": "Frogger Arcade State and Persistence Contracts",
+  "description": "Canonical JSON Schema contracts for the browser Frogger simulation state and localStorage persistence payload.",
+  "$defs": {
+    "GamePhase": {
+      "type": "string",
+      "enum": [
+        "TITLE",
+        "PLAYING",
+        "PAUSED",
+        "DYING",
+        "ROUND_CLEAR",
+        "GAME_OVER"
+      ]
+    },
+    "Direction": {
+      "type": "string",
+      "enum": ["UP", "DOWN", "LEFT", "RIGHT"]
+    },
+    "DeathCause": {
+      "type": ["string", "null"],
+      "enum": [
+        "ROADKILL",
+        "DROWNED",
+        "BANK_COLLISION",
+        "TIMEOUT",
+        "OUT_OF_BOUNDS",
+        null
+      ]
+    },
+    "TurtleDiveState": {
+      "type": "string",
+      "enum": ["SURFACE", "SINK_WARN", "SUBMERGED"]
+    },
+    "EntityKind": {
+      "type": "string",
+      "enum": [
+        "TRUCK",
+        "RACE_CAR",
+        "SEDAN",
+        "BULLDOZER",
+        "BUGGY",
+        "LOG",
+        "TURTLE_GROUP"
+      ]
+    },
+    "FrogState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "x",
+        "row",
+        "startX",
+        "startRow",
+        "targetX",
+        "targetRow",
+        "facing",
+        "hopping",
+        "hopElapsedMs",
+        "hopDurationMs",
+        "minRowReached"
+      ],
+      "properties": {
+        "x": { "type": "number", "minimum": -1, "maximum": 14 },
+        "row": { "type": "number", "minimum": 0, "maximum": 12 },
+        "startX": { "type": "number", "minimum": 0, "maximum": 13 },
+        "startRow": { "type": "integer", "minimum": 0, "maximum": 12 },
+        "targetX": { "type": "number", "minimum": 0, "maximum": 13 },
+        "targetRow": { "type": "integer", "minimum": 0, "maximum": 12 },
+        "facing": { "$ref": "#/$defs/Direction" },
+        "hopping": { "type": "boolean" },
+        "hopElapsedMs": { "type": "number", "minimum": 0 },
+        "hopDurationMs": { "type": "number", "exclusiveMinimum": 0 },
+        "minRowReached": { "type": "integer", "minimum": 0, "maximum": 12 }
+      }
+    },
+    "LaneEntity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "kind", "x", "width", "diveState", "diveTimerMs", "dives"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "kind": { "$ref": "#/$defs/EntityKind" },
+        "x": { "type": "number" },
+        "width": { "type": "number", "exclusiveMinimum": 0 },
+        "dives": { "type": "boolean" },
+        "diveState": { "$ref": "#/$defs/TurtleDiveState" },
+        "diveTimerMs": { "type": "number", "minimum": 0 }
+      }
+    },
+    "LaneState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["row", "zone", "direction", "baseSpeed", "wrapWidth", "entities"],
+      "properties": {
+        "row": { "type": "integer", "minimum": 1, "maximum": 11 },
+        "zone": { "type": "string", "enum": ["RIVER", "ROAD"] },
+        "direction": { "type": "integer", "enum": [-1, 1] },
+        "baseSpeed": { "type": "number", "exclusiveMinimum": 0 },
+        "wrapWidth": { "type": "number", "minimum": 14 },
+        "entities": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/LaneEntity" }
+        }
+      }
+    },
+    "HomeBayState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["index", "centerX", "occupied", "hasFly", "flyTimerMs"],
+      "properties": {
+        "index": { "type": "integer", "minimum": 0, "maximum": 4 },
+        "centerX": { "type": "number", "minimum": 0, "maximum": 13.5 },
+        "occupied": { "type": "boolean" },
+        "hasFly": { "type": "boolean" },
+        "flyTimerMs": { "type": "number", "minimum": 0 }
+      }
+    },
+    "FroggerGameState": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "phase",
+        "score",
+        "highScore",
+        "lives",
+        "level",
+        "extraLifeAwarded",
+        "timeRemainingMs",
+        "timeLimitMs",
+        "phaseTimerMs",
+        "deathCause",
+        "flySpawnCooldownMs",
+        "frog",
+        "lanes",
+        "homeBays"
+      ],
+      "properties": {
+        "phase": { "$ref": "#/$defs/GamePhase" },
+        "score": { "type": "integer", "minimum": 0, "maximum": 9999999 },
+        "highScore": { "type": "integer", "minimum": 0, "maximum": 9999999 },
+        "lives": { "type": "integer", "minimum": 0, "maximum": 9 },
+        "level": { "type": "integer", "minimum": 1 },
+        "extraLifeAwarded": { "type": "boolean" },
+        "timeRemainingMs": { "type": "number", "minimum": 0 },
+        "timeLimitMs": { "type": "number", "exclusiveMinimum": 0 },
+        "phaseTimerMs": { "type": "number", "minimum": 0 },
+        "deathCause": { "$ref": "#/$defs/DeathCause" },
+        "flySpawnCooldownMs": { "type": "number", "minimum": 0 },
+        "frog": { "$ref": "#/$defs/FrogState" },
+        "lanes": {
+          "type": "array",
+          "minItems": 10,
+          "maxItems": 10,
+          "items": { "$ref": "#/$defs/LaneState" }
+        },
+        "homeBays": {
+          "type": "array",
+          "minItems": 5,
+          "maxItems": 5,
+          "items": { "$ref": "#/$defs/HomeBayState" }
+        }
+      }
+    },
+    "PersistedSettingsAndScore": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "highScore", "muted", "crtScanlines"],
+      "properties": {
+        "schemaVersion": { "type": "integer", "const": 1 },
+        "highScore": { "type": "integer", "minimum": 0, "maximum": 9999999 },
+        "muted": { "type": "boolean" },
+        "crtScanlines": { "type": "boolean" }
+      }
+    }
+  },
+  "oneOf": [
+    { "$ref": "#/$defs/FroggerGameState" },
+    { "$ref": "#/$defs/PersistedSettingsAndScore" }
+  ]
+}
