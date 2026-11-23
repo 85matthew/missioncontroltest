@@ -1,0 +1,9 @@
+{
+  "name": "frogger-arcade",
+  "version": "1.0.0",
+  "description": "Zero-dependency old-school Frogger arcade browser replica",
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  }
+}
